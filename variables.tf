@@ -29,7 +29,6 @@ variable "public_subnets" {
   description = "Map of public subnet names to their CIDR blocks"
 }
 
-
 variable "custom_ami" {
   description = "Custom AMI ID for the EC2 instance"
   type        = string
@@ -46,3 +45,4 @@ variable "app_port" {
   type        = number
   default     = 3000
 }
+
