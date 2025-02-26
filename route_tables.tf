@@ -20,4 +20,5 @@ resource "aws_route_table" "private_route_table" {
     Name      = "demo_private_rtb"
     Terraform = "true"
   }
+  
 }
