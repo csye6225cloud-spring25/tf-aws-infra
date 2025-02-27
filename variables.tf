@@ -31,9 +31,11 @@ variable "public_subnets" {
 
 
 variable "custom_ami" {
-  description = "Custom AMI ID for the EC2 instance"
+  description = "The custom AMI ID built by Packer"
   type        = string
+  default     = "ami-03404075036c503d1"
 }
+
 
 variable "instance_type" {
   description = "EC2 instance type"
