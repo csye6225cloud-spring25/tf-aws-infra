@@ -33,7 +33,7 @@ variable "public_subnets" {
 variable "custom_ami" {
   description = "The custom AMI ID built by Packer"
   type        = string
-  default     = "ami-03404075036c503d1"
+  default     = "ami-0000c40a8bb241438"
 }
 
 
@@ -44,7 +44,32 @@ variable "instance_type" {
 }
 
 variable "app_port" {
-  description = "Application port for the web app"
+  description = "Port number for the application to listen on"
   type        = number
   default     = 3000
+}
+
+variable "db_port" {
+  description = "Port number for the database connection"
+  type        = number
+  default     = 5432
+}
+
+variable "db_password" {
+  description = "Password for the RDS instance"
+  type        = string
+  sensitive   = true
+  default     = "password"
+}
+
+variable "db_username" {
+  description = "Database username"
+  type        = string
+  default     = "postgres"
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+  default     = "webapp"
 }

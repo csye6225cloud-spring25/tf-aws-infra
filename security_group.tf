@@ -47,3 +47,32 @@ resource "aws_security_group" "application_sg" {
     Name = "application_security_group"
   }
 }
+
+
+resource "aws_security_group" "rds_sg" {
+  name        = "rds_security_group"
+  description = "Security group for RDS instance"
+  vpc_id      = aws_vpc.vpc.id
+
+  # Allow inbound traffic from the EC2 security group
+  ingress {
+    description     = "Allow database connections from EC2"
+    from_port       = var.db_port
+    to_port         = var.db_port
+    protocol        = "tcp"
+    security_groups = [aws_security_group.application_sg.id] # Allow EC2 SG access
+  }
+
+  # Allow outbound traffic (default)
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "rds_security_group"
+  }
+}
