@@ -2,6 +2,39 @@
 set -e
 exec > /var/log/user_data.log 2>&1
 
+# CloudWatch Agent configuration
+cat <<EOF > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+{
+  "metrics": {
+    "metrics_collected": {
+      "statsd": {
+        "service_address": ":8125",
+        "metrics_collection_interval": 60,
+        "metrics_aggregation_interval": 60
+      }
+    }
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/log/webapp.log",
+            "log_group_name": "webapp-logs",
+            "log_stream_name": "{instance_id}"
+          }
+        ]
+      }
+    }
+  }
+}
+EOF
+
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
+
+
+# Application configuration
+
 cat <<EOF > /opt/app/backend/.env
 DATABASE_URL="postgresql://${db_username}:${db_password}@${rds_endpoint}/${db_name}?schema=public"
 AWS_REGION="${aws_region}"
