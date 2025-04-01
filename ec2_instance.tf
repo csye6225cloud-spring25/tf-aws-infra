@@ -1,11 +1,12 @@
+# ec2.tf
 resource "aws_instance" "app_instance" {
-  ami                         = "ami-092a6ea3e234b7b14"
+  ami                         = "ami-0ef8bed579ec84474"
   instance_type               = var.instance_type
   subnet_id                   = aws_subnet.public_subnets["public_subnet_1"].id
   vpc_security_group_ids      = [aws_security_group.application_sg.id]
   associate_public_ip_address = true
   disable_api_termination     = false
-  iam_instance_profile        = aws_iam_instance_profile.cloudwatch_agent_profile.name # Updated to CloudWatch profile
+  iam_instance_profile        = aws_iam_instance_profile.ec2_instance_profile.name # Updated to combined profile
 
   root_block_device {
     volume_size           = 25
