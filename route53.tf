@@ -1,18 +1,31 @@
-# Dev AWS Account Terraform directory
-
-# Reference the existing hosted zone for dev.onerahul.me
+# Dev Configuration (uncomment when working on Dev)
 data "aws_route53_zone" "dev_zone" {
-  zone_id = "Z0624390ZXDW2D39OXCG"
+  zone_id = "Z0624390ZXDW2D39OXCG" # Replace with your Dev hosted zone ID
 }
 
-# Create an A record alias pointing to the ALB
 resource "aws_route53_record" "dev_alb" {
   zone_id = data.aws_route53_zone.dev_zone.zone_id
   name    = "dev.onerahul.me"
   type    = "A"
   alias {
-    name                   = aws_lb.app_alb.dns_name # Reference to your ALB’s DNS name
-    zone_id                = aws_lb.app_alb.zone_id  # Reference to your ALB’s zone ID
+    name                   = aws_lb.app_alb.dns_name # References the Dev ALB
+    zone_id                = aws_lb.app_alb.zone_id  # References the Dev ALB zone ID
     evaluate_target_health = true
   }
 }
+
+# Demo Configuration (uncomment when working on Demo)
+# data "aws_route53_zone" "demo_zone" {
+#   zone_id = "Z0987654321DEF" # Replace with your Demo hosted zone ID
+# }
+
+# resource "aws_route53_record" "demo_alb" {
+#   zone_id = data.aws_route53_zone.demo_zone.zone_id
+#   name    = "demo.onerahul.me"
+#   type    = "A"
+#   alias {
+#     name                   = aws_lb.app_alb.dns_name # References the Demo ALB
+#     zone_id                = aws_lb.app_alb.zone_id  # References the Demo ALB zone ID
+#     evaluate_target_health = true
+#   }
+# }
