@@ -46,6 +46,8 @@ EOF
 
 sudo chown csye6225:csye6225 /opt/app/backend/.env
 cd /opt/app/backend
+rm -rf node_modules
+npm install
 npx prisma migrate deploy
 
 # Start the application service

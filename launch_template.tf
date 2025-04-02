@@ -1,7 +1,7 @@
 # launch_template.tf (formerly ec2.tf)
 resource "aws_launch_template" "app_lt" {
   name_prefix   = "app-lt-"
-  image_id      = "ami-0ef8bed579ec84474"
+  image_id      = "ami-0ee902fffb2e0f75d"
   instance_type = var.instance_type
 
   vpc_security_group_ids = [aws_security_group.application_sg.id]
