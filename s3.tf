@@ -1,25 +1,24 @@
-# S3 Bucket
+# s3.tf
 resource "aws_s3_bucket" "private_bucket" {
   bucket        = "csye6225-${uuid()}"
-  force_destroy = true # Add this line
+  force_destroy = true
 
   tags = {
     Name = "csye6225-private-bucket"
   }
 }
 
-# Server-Side Encryption Configuration
 resource "aws_s3_bucket_server_side_encryption_configuration" "private_bucket_encryption" {
   bucket = aws_s3_bucket.private_bucket.id
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.s3_key.arn
     }
   }
 }
 
-# Lifecycle Configuration
 resource "aws_s3_bucket_lifecycle_configuration" "private_bucket_lifecycle" {
   bucket = aws_s3_bucket.private_bucket.id
 
@@ -34,7 +33,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "private_bucket_lifecycle" {
   }
 }
 
-# Block Public Access
 resource "aws_s3_bucket_public_access_block" "private_bucket_block" {
   bucket = aws_s3_bucket.private_bucket.id
 
@@ -44,7 +42,6 @@ resource "aws_s3_bucket_public_access_block" "private_bucket_block" {
   restrict_public_buckets = true
 }
 
-# Bucket Ownership Controls
 resource "aws_s3_bucket_ownership_controls" "private_bucket_ownership" {
   bucket = aws_s3_bucket.private_bucket.id
 

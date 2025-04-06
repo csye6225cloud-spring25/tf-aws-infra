@@ -1,4 +1,6 @@
+# iam.tf
 
+# IAM Role for EC2 instances
 resource "aws_iam_role" "ec2_access_role" {
   name = "EC2AccessRole"
   assume_role_policy = jsonencode({
@@ -15,7 +17,7 @@ resource "aws_iam_role" "ec2_access_role" {
   })
 }
 
-# Define the S3 policy (unchanged from your original)
+# S3 Access Policy
 resource "aws_iam_policy" "ec2_s3_policy" {
   name        = "EC2S3AccessPolicy"
   description = "Policy for EC2 instances to access S3 bucket"
@@ -39,19 +41,46 @@ resource "aws_iam_policy" "ec2_s3_policy" {
   })
 }
 
-# Attach the custom S3 policy to the combined role
+# Secrets Manager Access Policy
+resource "aws_iam_policy" "secrets_manager_policy" {
+  name        = "SecretsManagerAccess"
+  description = "Allow EC2 instances to access Secrets Manager"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "secretsmanager:GetSecretValue"
+        Resource = aws_secretsmanager_secret.db_password.arn
+      },
+      {
+        Effect   = "Allow"
+        Action   = "kms:Decrypt"
+        Resource = aws_kms_key.secrets_key.arn
+      }
+    ]
+  })
+}
+
+# Attach S3 Policy to Role
 resource "aws_iam_role_policy_attachment" "ec2_s3_policy_attachment" {
   role       = aws_iam_role.ec2_access_role.name
   policy_arn = aws_iam_policy.ec2_s3_policy.arn
 }
 
-# Attach the AWS-managed CloudWatchAgentServerPolicy to the combined role
+# Attach CloudWatch Policy to Role
 resource "aws_iam_role_policy_attachment" "cloudwatch_policy_attachment" {
   role       = aws_iam_role.ec2_access_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
-# Create a single instance profile for the combined role
+# Attach Secrets Manager Policy to Role
+resource "aws_iam_role_policy_attachment" "secrets_manager_policy_attachment" {
+  role       = aws_iam_role.ec2_access_role.name
+  policy_arn = aws_iam_policy.secrets_manager_policy.arn
+}
+
+# Instance Profile for EC2
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "EC2InstanceProfile"
   role = aws_iam_role.ec2_access_role.name
