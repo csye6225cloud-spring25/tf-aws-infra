@@ -32,18 +32,25 @@ EOF
 
 sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
 
+# Create and configure the application log file
+sudo touch /var/log/webapp.log
+sudo chown csye6225:csye6225 /var/log/webapp.log
+sudo chmod 644 /var/log/webapp.log
 
 # Application configuration
-
 cat <<EOF > /opt/app/backend/.env
 DATABASE_URL="postgresql://${db_username}:${db_password}@${rds_endpoint}/${db_name}?schema=public"
 AWS_REGION="${aws_region}"
 AWS_S3_BUCKET="${s3_bucket_name}"
 EOF
 
-chown csye6225:csye6225 /opt/app/backend/.env
+sudo chown csye6225:csye6225 /opt/app/backend/.env
 cd /opt/app/backend
+rm -rf node_modules
+npm install
 npx prisma migrate deploy
 
-systemctl enable csye6225.service
-systemctl start csye6225.service
+# Start the application service
+sudo systemctl enable csye6225.service
+sudo systemctl start csye6225.service
+sudo systemctl restart csye6225.service
