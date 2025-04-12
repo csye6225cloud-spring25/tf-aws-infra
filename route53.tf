@@ -30,16 +30,15 @@ resource "aws_route53_record" "app_alb" {
   }
 }
 
-# Certificate validation record for dev (only needed when environment = dev)
+# Certificate validation record for dev
 resource "aws_route53_record" "cert_validation" {
-  count = var.environment == "dev" ? 1 : 0
-  for_each = {
+  for_each = var.environment == "dev" ? {
     for dvo in aws_acm_certificate.app_cert[0].domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
     }
-  }
+  } : {}
 
   zone_id = var.hosted_zone_ids["dev"]
   name    = each.value.name
