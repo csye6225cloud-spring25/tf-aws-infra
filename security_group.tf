@@ -8,12 +8,12 @@ resource "aws_security_group" "application_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Ideally, restrict to your IP
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
     description     = "Allow application traffic from LB"
-    from_port       = var.app_port # e.g., 8080
+    from_port       = var.app_port
     to_port         = var.app_port
     protocol        = "tcp"
     security_groups = [aws_security_group.lb_sg.id] # Only from LB SG
@@ -62,17 +62,9 @@ resource "aws_security_group" "rds_sg" {
 
 
 resource "aws_security_group" "lb_sg" {
-  name        = "load_balancer_sg"
+  name        = "${var.environment}-load-balancer-sg"
   description = "Security group for load balancer"
   vpc_id      = aws_vpc.vpc.id
-
-  ingress {
-    description = "Allow HTTP traffic"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   ingress {
     description = "Allow HTTPS traffic"
@@ -91,6 +83,6 @@ resource "aws_security_group" "lb_sg" {
   }
 
   tags = {
-    Name = "load_balancer_sg"
+    Name = "${var.environment}-load-balancer-sg"
   }
 }

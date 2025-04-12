@@ -78,3 +78,15 @@ Confirm the action by typing `yes` when prompted.
 ## View the Infrastructure
 
 After the infrastructure is deployed, you can go to the **AWS Management Console** to view your newly created VPC, subnets, and other networking resources.
+
+## Importing SSL Certificate for Demo Environment
+
+To import the Namecheap SSL certificate for `demo.onerahul.me` into AWS Certificate Manager:
+
+```bash
+aws acm import-certificate \
+  --certificate fileb://demo_onerahul_me.crt \
+  --private-key fileb://demo_onerahul_me.key \
+  --certificate-chain fileb://demo_onerahul_me.ca-bundle \
+  --region us-east-1
+```

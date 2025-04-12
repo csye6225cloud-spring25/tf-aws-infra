@@ -2,6 +2,13 @@
 set -e
 exec > /var/log/user_data.log 2>&1
 
+# Install AWS CLI (skip if already in AMI)
+sudo apt-get update
+sudo apt-get install -y awscli
+
+# Retrieve the database password from Secrets Manager
+DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id db_password_new --query SecretString --output text --region "${aws_region}")
+
 # CloudWatch Agent configuration
 cat <<EOF > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 {
@@ -39,7 +46,7 @@ sudo chmod 644 /var/log/webapp.log
 
 # Application configuration
 cat <<EOF > /opt/app/backend/.env
-DATABASE_URL="postgresql://${db_username}:${db_password}@${rds_endpoint}/${db_name}?schema=public"
+DATABASE_URL="postgresql://${db_username}:$${DB_PASSWORD}@${rds_endpoint}/${db_name}?schema=public"
 AWS_REGION="${aws_region}"
 AWS_S3_BUCKET="${s3_bucket_name}"
 EOF
