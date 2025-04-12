@@ -5,7 +5,7 @@ resource "random_password" "db_password" {
 }
 
 resource "aws_secretsmanager_secret" "db_password" {
-  name       = "db_password"
+  name       = "db_password_new"
   kms_key_id = aws_kms_key.secrets_key.id
 }
 

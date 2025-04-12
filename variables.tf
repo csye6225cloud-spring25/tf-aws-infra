@@ -73,3 +73,22 @@ variable "db_name" {
   type        = string
   default     = "webapp"
 }
+
+variable "environment" {
+  description = "The environment to deploy (dev or demo)"
+  type        = string
+  default     = "dev"
+  validation {
+    condition     = contains(["dev", "demo"], var.environment)
+    error_message = "Environment must be 'dev' or 'demo'."
+  }
+}
+
+variable "hosted_zone_ids" {
+  description = "Hosted zone IDs for dev and demo"
+  type        = map(string)
+  default = {
+    dev  = "Z0624390ZXDW2D39OXCG"
+    demo = "Z06229003B7BF36WA89MH"
+  }
+}

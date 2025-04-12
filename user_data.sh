@@ -7,7 +7,7 @@ sudo apt-get update
 sudo apt-get install -y awscli
 
 # Retrieve the database password from Secrets Manager
-DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id db_password --query SecretString --output text --region "${aws_region}")
+DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id db_password_new --query SecretString --output text --region "${aws_region}")
 
 # CloudWatch Agent configuration
 cat <<EOF > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json

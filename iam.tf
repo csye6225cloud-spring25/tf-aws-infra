@@ -49,13 +49,19 @@ resource "aws_iam_policy" "secrets_manager_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = "secretsmanager:GetSecretValue"
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ],
         Resource = aws_secretsmanager_secret.db_password.arn
       },
       {
-        Effect   = "Allow"
-        Action   = "kms:Decrypt"
+        Effect = "Allow",
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
         Resource = aws_kms_key.secrets_key.arn
       }
     ]

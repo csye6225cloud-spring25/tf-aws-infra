@@ -11,6 +11,7 @@ resource "aws_autoscaling_group" "app_asg" {
   health_check_type         = "ELB"
   health_check_grace_period = 300
   target_group_arns         = [aws_lb_target_group.app_tg.arn]
+  wait_for_capacity_timeout = "15m"
 
   tag {
     key                 = "Name"
