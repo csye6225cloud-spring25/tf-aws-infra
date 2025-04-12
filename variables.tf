@@ -29,7 +29,6 @@ variable "public_subnets" {
   description = "Map of public subnet names to their CIDR blocks"
 }
 
-
 variable "custom_ami" {
   description = "The custom AMI ID built by Packer"
   type        = string
@@ -92,3 +91,4 @@ variable "hosted_zone_ids" {
     demo = "Z06229003B7BF36WA89MH"
   }
 }
+
